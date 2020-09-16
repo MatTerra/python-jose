@@ -2,6 +2,7 @@ from jose import jwk
 from jose.exceptions import JWKError
 from jose.backends.base import Key
 from jose.backends import ECKey, RSAKey, HMACKey, AESKey
+from jose.utils import base64url_decode
 
 import pytest
 
@@ -139,3 +140,17 @@ class TestJWK:
 
         with pytest.raises(TypeError):
             assert jwk.register_key("ALG", object)
+
+    # This should not pass for python 3.7.6
+    def test_verify_message_str(self):
+        token = \
+            "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWV" \
+            "lZjMxNGJjNzAzNyJ9.SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kb" \
+            "ywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwg" \
+            "YW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGt" \
+            "ub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4.s0h6KThzkf" \
+            "BBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
+        key = jwk.construct(hmac_key)
+        message, encoded_sig = token.rsplit('.', 1)
+        decoded_sig = base64url_decode(encoded_sig)
+        assert key.verify(message, decoded_sig)

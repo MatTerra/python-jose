@@ -70,6 +70,8 @@ class HMACKey(Key):
         return hmac.new(self.prepared_key, msg, self._hash_alg).digest()
 
     def verify(self, msg, sig):
+        if isinstance(msg, str):
+            msg = msg.encode('utf-8')
         return hmac.compare_digest(sig, self.sign(msg))
 
     def to_dict(self):
