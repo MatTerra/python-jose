@@ -87,7 +87,11 @@ def base64url_decode(data):
     if rem > 0:
         data += b'=' * (4 - rem)
 
-    return base64.urlsafe_b64decode(data)
+    url = base64.urlsafe_b64decode(data)
+    if sys.version_info[0] == 2:
+        url.decode('utf-8')
+
+    return url
 
 
 def base64url_encode(data):

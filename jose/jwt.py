@@ -2,6 +2,11 @@
 import json
 
 from calendar import timegm
+from re import error
+
+import yaml
+from yaml.parser import ParserError
+
 try:
     from collections.abc import Mapping  # Python3
 except ImportError:
@@ -162,8 +167,10 @@ def decode(token, key, algorithms=None, options=None, audience=None,
     algorithm = jws.get_unverified_header(token)['alg']
 
     try:
-        claims = json.loads(payload)
+        claims = yaml.safe_load(payload)
     except ValueError as e:
+        raise JWTError('Invalid payload string: %s' % e)
+    except ParserError as e:
         raise JWTError('Invalid payload string: %s' % e)
 
     if not isinstance(claims, Mapping):

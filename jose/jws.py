@@ -2,6 +2,7 @@
 import binascii
 import json
 import six
+import yaml
 
 try:
     from collections.abc import Mapping, Iterable  # Python 3
@@ -50,6 +51,9 @@ def sign(payload, key, headers=None, algorithm=ALGORITHMS.HS256):
     encoded_payload = _encode_payload(payload)
     signed_output = _sign_header_and_claims(encoded_header, encoded_payload, algorithm, key)
 
+    if not isinstance(signed_output, str):
+        signed_output = signed_output.encode('utf-8')
+
     return signed_output
 
 
@@ -82,7 +86,7 @@ def verify(token, key, algorithms, verify=True):
     if verify:
         _verify_signature(signing_input, header, signature, key, algorithms)
 
-    return payload.decode('utf-8')
+    return payload.decode('utf-8') if not isinstance(payload, str) else payload
 
 
 def get_unverified_header(token):
@@ -152,7 +156,7 @@ def get_unverified_claims(token):
         >>> from jose import jws
         >>> token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoiYiJ9.jiMyrsmD8AoHWeQgmxZ5yq8z0lXS67_QGs52AzC8Ru8'
         >>> jws.get_unverified_claims(token)
-        b'{"a":"b"}'
+        '{"a":"b"}'
 
     """
     header, claims, signing_input, signature = _load(token)
@@ -219,7 +223,7 @@ def _load(jwt):
         raise JWSError('Invalid header padding')
 
     try:
-        header = json.loads(header_data.decode('utf-8'))
+        header = yaml.safe_load(header_data.decode('utf-8'))
     except ValueError as e:
         raise JWSError('Invalid header string: %s' % e)
 
