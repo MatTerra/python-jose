@@ -84,7 +84,8 @@ def decrypt(jwe_str, key):
     Examples:
 
         >>> from jose import jwe
-        >>> jwe_string = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIn0..McILMB3dYsNJSuhcDzQshA.OfX9H_mcUpHDeRM4IA.CcnTWqaqxNsjT4eCaUABSg'
+        >>> jwe_string = ('eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIn0..McILMB3d'
+        'YsNJSuhcDzQshA.OfX9H_mcUpHDeRM4IA.CcnTWqaqxNsjT4eCaUABSg')
         >>> jwe.decrypt(jwe_string, 'asecret128bitkey')
         'Hello, World!'
 
@@ -217,7 +218,8 @@ def get_unverified_header(jwe_str):
     Examples:
 
         >>> from jose import jwe
-        >>> jwe_string = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIn0..McILMB3dYsNJSuhcDzQshA.OfX9H_mcUpHDeRM4IA.CcnTWqaqxNsjT4eCaUABSg'
+        >>> jwe_string = ('eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIn0..McILMB3d'
+        'YsNJSuhcDzQshA.OfX9H_mcUpHDeRM4IA.CcnTWqaqxNsjT4eCaUABSg')
         >>> jwe.get_unverified_header(jwe_string)
         {'alg': 'dir', 'enc': 'A128GCM'}
 
