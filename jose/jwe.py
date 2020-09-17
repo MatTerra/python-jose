@@ -4,6 +4,7 @@ import zlib
 from struct import pack
 
 import six
+import yaml
 
 try:
     from collections.abc import Mapping  # Python 3
@@ -64,7 +65,11 @@ def encrypt(plaintext, key, encryption=ALGORITHMS.A256GCM,
         key, algorithm, encryption, zip, plaintext, encoded_header)
 
     jwe_string = _jwe_compact_serialize(encoded_header, enc_cek, iv, cipher_text, auth_tag)
-    return jwe_string.decode('utf-8')
+
+    if not isinstance(jwe_string, str):
+        jwe_string = jwe_string.decode('utf-8')
+
+    return jwe_string
 
 
 def decrypt(jwe_str, key):
@@ -84,7 +89,7 @@ def decrypt(jwe_str, key):
     Examples:
 
         >>> from jose import jwe
-        >>> jwe_string = ('eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIn0..McILMB3d'
+        >>> jwe_string = ('eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIn0..McILMB3d'\
         'YsNJSuhcDzQshA.OfX9H_mcUpHDeRM4IA.CcnTWqaqxNsjT4eCaUABSg')
         >>> jwe.decrypt(jwe_string, 'asecret128bitkey')
         'Hello, World!'
@@ -200,7 +205,10 @@ def decrypt(jwe_str, key):
     if plain_text is not None:
         plain_text = _decompress(header.get("zip"), plain_text)
 
-    return plain_text.decode('utf-8') if cek_valid else None
+    if not isinstance(plain_text, str):
+        plain_text = plain_text.decode('utf-8')
+
+    return plain_text if cek_valid else None
 
 
 def get_unverified_header(jwe_str):
@@ -218,7 +226,7 @@ def get_unverified_header(jwe_str):
     Examples:
 
         >>> from jose import jwe
-        >>> jwe_string = ('eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIn0..McILMB3d'
+        >>> jwe_string = ('eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4R0NNIn0..McILMB3d'\
         'YsNJSuhcDzQshA.OfX9H_mcUpHDeRM4IA.CcnTWqaqxNsjT4eCaUABSg')
         >>> jwe.get_unverified_header(jwe_string)
         {'alg': 'dir', 'enc': 'A128GCM'}
@@ -319,7 +327,7 @@ def _jwe_compact_deserialize(jwe_bytes):
     # values that together comprise the JOSE Header.
 
     try:
-        header = json.loads(six.ensure_str(header_data))
+        header = yaml.safe_load(six.ensure_str(header_data))
     except ValueError as e:
         raise JWEParseError('Invalid header string: %s' % e)
 
