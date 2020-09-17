@@ -103,6 +103,10 @@ class TestHMAC(object):
         token = jws.sign(payload, 'secret', algorithm=ALGORITHMS.HS256)
         assert jws.verify(token, 'secret', ALGORITHMS.HS256) == payload
 
+    def testHMAC256_str_return(self, payload):
+        token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhIjoiYiJ9.jiMyrsmD8AoHWeQgmxZ5yq8z0lXS67_QGs52AzC8Ru8'
+        assert isinstance(jws.verify(token, 'secret', algorithms='HS256'), str)
+
     def testHMAC384(self, payload):
         token = jws.sign(payload, 'secret', algorithm=ALGORITHMS.HS384)
         assert jws.verify(token, 'secret', ALGORITHMS.HS384) == payload

@@ -141,7 +141,6 @@ class TestJWK:
         with pytest.raises(TypeError):
             assert jwk.register_key("ALG", object)
 
-    # This should not pass for python 3.7.6
     def test_verify_message_str(self):
         token = \
             "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWV" \
