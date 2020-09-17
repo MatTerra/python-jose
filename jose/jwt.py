@@ -240,7 +240,7 @@ def get_unverified_claims(token):
         raise JWTError('Error decoding token claims.')
 
     try:
-        claims = json.loads(claims.decode('utf-8'))
+        claims = json.loads(claims)
     except ValueError as e:
         raise JWTError('Invalid claims string: %s' % e)
 

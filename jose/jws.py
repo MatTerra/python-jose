@@ -232,6 +232,8 @@ def _load(jwt):
 
     try:
         payload = base64url_decode(claims_segment)
+        if not isinstance(payload, str):
+            payload = payload.decode('utf-8')
     except (TypeError, binascii.Error):
         raise JWSError('Invalid payload padding')
 
